@@ -1,55 +1,90 @@
-使用PHP创建一组API来模拟基本银行账户的功能:
 
-1.开户
-2.注销用户
-3.查询余额
-4.取钱
-5.存钱
-6.转账（每日限额为 $10000 美元）
-	a.从同一所有者的另一账户
-		不收取费用
-	b.不属于同一所有者的另一帐户
-		必须使用以下接口进行授权（http://handy.travel/test/success.json）
-		为了保持简单，不需要传递任何参数
-		请求批准时，返回 {"status": "success"}
-		每笔固定服务费 $100美元
+-- ----------------------------
+-- 用户列表
+-- ----------------------------
+DROP TABLE IF EXISTS `user_list`;
+CREATE TABLE `user_list` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(50) NOT NULL DEFAULT '',
+  `add_time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM CHARSET=utf8;
 
-该测试中，请假设不需要进行身份验证来访问API。
+-- ----------------------------
+-- 账户列表
+-- ----------------------------
+DROP TABLE IF EXISTS `account_list`;
+CREATE TABLE `account_list` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `add_time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM CHARSET=utf8;
 
-提供测速可以增加得分。
+-- ----------------------------
+-- 账户信息属性
+-- ----------------------------
+DROP TABLE IF EXISTS `account_info`;
+CREATE TABLE `account_info` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `account_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `balance` decimal(15, 2) unsigned NOT NULL DEFAULT 0,
+  `transfer_limit` decimal(15, 2) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`)
+) ENGINE=InnoDB CHARSET=utf8;
 
-在您的方法中，要注意可重用性、可读性、可扩展性和干净的编码原则。必要时提供足够的意见。随意使用任何第三方库。
+-- ----------------------------
+-- 账户转账限额
+-- ----------------------------
+DROP TABLE IF EXISTS `account_transfer_limit`;
+CREATE TABLE `account_transfer_limit` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `account_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+  `remain_limit` decimal(15, 2) unsigned NOT NULL DEFAULT 0,
+  `limit_date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`)
+) ENGINE=InnoDB CHARSET=utf8;
 
+-- ----------------------------
+-- 交易类型
+-- ----------------------------
+-- DROP TABLE IF EXISTS `deal_type`;
+-- CREATE TABLE `deal_type` (
+--   `id` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
+--   `title` varchar(50) NOT NULL DEFAULT '',
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=MyISAM CHARSET=utf8;
 
+-- ----------------------------
+-- 交易记录
+-- ----------------------------
+-- DROP TABLE IF EXISTS `deal_list`;
+-- CREATE TABLE `deal_list` (
+--   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+--   `account_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+--   `type_id` tinyint(2) unsigned NOT NULL DEFAULT 0,
+--   `changes_amount` decimal(15, 2) NOT NULL DEFAULT 0,
+--   `balance` decimal(15, 2) unsigned NOT NULL DEFAULT 0,
+--   `add_time` int(11) NOT NULL DEFAULT '0',
+--   PRIMARY KEY (`id`),
+--   KEY `account_id` (`account_id`)
+-- ) ENGINE=MyISAM CHARSET=utf8;
 
-
-
-
-所有者列表
-  用户身份编码（所有者，也可以使用用户名）
-
-账户列表
-  随机账户ID
-  所有者ID
-
-账户金额信息
-  随机账户ID
-  账户金额
-  每日限额
-  剩余额度
-
-交易类型
-  名称
-
-交易记录
-  交易类型
-  账户ID
-  交易金额
-  账户剩余金额
-  交易时间
-
-转账记录
-  交易ID
-  转出账户ID
-  转入账户ID
-  服务费
+-- ----------------------------
+-- 转账记录
+-- ----------------------------
+-- DROP TABLE IF EXISTS `transfer_list`;
+-- CREATE TABLE `transfer_list` (
+--   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+--   `deal_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+--   `transfer_account_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+--   `transfer_into_account_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
+--   `service_charge` decimal(15, 2) unsigned NOT NULL DEFAULT 0,
+--   `add_time` int(11) NOT NULL DEFAULT '0',
+--   PRIMARY KEY (`id`),
+--   UNIQUE KEY `deal_id` (`deal_id`)
+-- ) ENGINE=MyISAM CHARSET=utf8;

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Withdraw money</title>
+</head>
+<body>
+    <label>帐号ID：</label><input type="text" name="account_id" id="account_id"><br />
+    <label>取款金额：</label><input type="text" name="amount" id="amount"><br />
+    <input type="button" value="取款" onclick="post()">
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript">
+        function post(){
+            $.post("/bankapi.php/deal/withdrawMoney",{
+                    account_id:$("#account_id").val(),
+                    amount:$("#amount").val()
+                },
+                function(data){
+                    var data = JSON.parse(data);
+                    if (data.status == 'success') {
+                        alert('操作成功');
+                    }else{
+                        alert(data.message);
+                    }
+            },'json');
+        }
+    </script>
+</body>
+</html>

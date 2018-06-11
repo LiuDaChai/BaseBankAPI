@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transfer money</title>
+</head>
+<body>
+    <label>转出帐号ID：</label><input type="text" name="transfer_account_id" id="transfer_account_id"><br />
+    <label>转入帐号ID：</label><input type="text" name="transfer_into_account_id" id="transfer_into_account_id"><br />
+    <label>转账金额：</label><input type="text" name="amount" id="amount"><br />
+    <input type="button" value="转账" onclick="post()">
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript">
+        function post(){
+            $.post("/bankapi.php/deal/transferMoney",{
+                    transfer_account_id:$("#transfer_account_id").val(),
+                    transfer_into_account_id:$("#transfer_into_account_id").val(),
+                    amount:$("#amount").val()
+                },
+                function(data){
+                    var data = JSON.parse(data);
+                    if (data.status == 'success') {
+                        alert('操作成功');
+                    }else{
+                        alert(data.message);
+                    }
+            },'json');
+        }
+    </script>
+</body>
+</html>

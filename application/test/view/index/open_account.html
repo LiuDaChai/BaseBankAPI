@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Open account</title>
+</head>
+<body>
+    <label>所有者名称：</label><input type="text" name="user_name" id="user_name">
+    <input type="button" value="开户" onclick="post()">
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript">
+        function post(){
+            $.post("/bankapi.php/account/openAccount",{
+                    user_name:$("#user_name").val()
+                },
+                function(data){
+                    var data = JSON.parse(data);
+                    if (data.status == 'success') {
+                        alert('操作成功');
+                    }else{
+                        alert(data.message);
+                    }
+            },'json');
+        }
+    </script>
+</body>
+</html>

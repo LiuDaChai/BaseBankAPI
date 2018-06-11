@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Get current balance</title>
+</head>
+<body>
+    <label>帐号ID：</label><input type="text" name="account_id" id="account_id">
+    <input type="button" value="获取余额" onclick="post()">
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript">
+        function post(){
+            $.post("/bankapi.php/account/getBalance",{
+                    account_id:$("#account_id").val()
+                },
+                function(data){
+                    var data = JSON.parse(data);
+                    if (data.status == 'success') {
+                        alert('操作成功，余额为：'+data.data.balance);
+                    }else{
+                        alert(data.message);
+                    }
+            },'json');
+        }
+    </script>
+</body>
+</html>
